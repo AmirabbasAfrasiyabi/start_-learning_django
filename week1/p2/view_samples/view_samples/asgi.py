@@ -1,5 +1,5 @@
 """
-ASGI config for veiw_sample project.
+ASGI config for view_samples project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'veiw_sample.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'view_samples.settings')
 
 application = get_asgi_application()

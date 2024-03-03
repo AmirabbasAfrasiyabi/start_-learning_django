@@ -1,5 +1,5 @@
 """
-WSGI config for veiw_sample project.
+WSGI config for view_samples project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'veiw_sample.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'view_samples.settings')
 
 application = get_wsgi_application()
