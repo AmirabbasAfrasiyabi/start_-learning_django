@@ -19,7 +19,7 @@ class Post(models.Model):
     like_count = models.PositiveIntegerField(default=0)
     # engagement_count = models.PositiveIntegerField()
     templates = models.ManyToManyField(to='PostTemplate' , related_name='posts')
-    # archived = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
 
     # not_archived = PostManager()
 
@@ -33,8 +33,8 @@ class PostTemplate(models.Model):
     title_template = models.CharField(max_length=64)
     content_template = models.TextField()
 
-    # def __str__(self):
-    #     return f"title: {self.title_template}"
+    def __str__(self):
+        return f"title: {self.title_template}"
 
 # class Library(models.Model):
 #     name = models.CharField(max_length=32)
