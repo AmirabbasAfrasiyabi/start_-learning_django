@@ -19,10 +19,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from posts.views import retrieve_posts , retrieve_posts_exclude_sample
+from posts.views import retrieve_posts , retrieve_posts_exclude_sample ,retrieve_posts_with_equal_content_title
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', retrieve_posts),
     path('posts/exclude/', retrieve_posts_exclude_sample),
+    path('posts/same-title/', retrieve_posts_with_equal_content_title),
 ]
