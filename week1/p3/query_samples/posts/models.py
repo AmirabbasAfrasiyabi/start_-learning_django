@@ -21,7 +21,7 @@ class Post(models.Model):
     templates = models.ManyToManyField(to='PostTemplate' , related_name='posts')
     archived = models.BooleanField(default=False)
 
-    # not_archived = PostManager()
+    not_archived = PostManager()
 
 class Comment(models.Model):
     text = models.TextField()
