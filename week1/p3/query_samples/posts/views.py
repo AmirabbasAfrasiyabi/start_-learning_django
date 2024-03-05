@@ -5,6 +5,7 @@ from django.db.models import Q, F
 from django.http import HttpResponse
 # Create your views here.
 from django.shortcuts import render
+from posts.models import Post, Comment, PostTemplate
 
 # from posts.forms import post_formset, book_formset
 from posts.models import Post, Comment
@@ -60,3 +61,10 @@ def get_comments(request):
     Post.objects.filter(my_comments__in=comments)
     return HttpResponse(comments.values_list('text', flat=True))
 
+def add_templates(request):
+    now = datetime.now()
+    PostTemplate.objects.create(title_template='some other template', content_template='')
+    new_template = PostTemplate.objects.all()
+    post = Post.not_archived.first()
+    post.templates.set(new_template)
+    return HttpResponse('done')
