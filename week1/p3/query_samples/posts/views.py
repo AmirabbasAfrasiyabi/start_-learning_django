@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 # from django.db.models import CharField
-from django.db.models import Q
+from django.db.models import Q ,F
 from django.http import HttpResponse
 # Create your views here.
 
@@ -33,3 +33,15 @@ def retrieve_posts_exclude_sample(request):
 
     # message = f'post count: {posts.count()}'
     return HttpResponse(posts.only('title').values_list('title', flat=True))
+
+def retrieve_posts_with_equal_content_title(request):
+    # python way to find posts with equal content & title
+    # posts = []
+    # for post in Post.objects.all():
+    #     if post.title == post.content:
+    #         posts.append(post)
+
+    # db (orm) way to find posts with equal content & title
+    posts = Post.objects.filter(title=F('content')).annotate(view_like_avg=F('like_count') + F('view_count'))
+
+    return HttpResponse(posts.values_list('title', 'content', 'view_like_avg'))
