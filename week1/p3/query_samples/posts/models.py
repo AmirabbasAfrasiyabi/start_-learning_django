@@ -18,7 +18,7 @@ class Post(models.Model):
     view_count = models.PositiveIntegerField(default=0)
     like_count = models.PositiveIntegerField(default=0)
     # engagement_count = models.PositiveIntegerField()
-    templates = models.ManyToManyField(to='PostTemplate')
+    templates = models.ManyToManyField(to='PostTemplate' , related_name='posts')
     # archived = models.BooleanField(default=False)
 
     # not_archived = PostManager()
@@ -27,7 +27,7 @@ class Comment(models.Model):
     text = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE,related_name='my_comments')
 
 class PostTemplate(models.Model):
     title_template = models.CharField(max_length=64)
