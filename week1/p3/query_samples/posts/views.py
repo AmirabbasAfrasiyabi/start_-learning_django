@@ -1,4 +1,4 @@
-# from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 
 # from django.db.models import CharField
 from django.db.models import Q, F, When, Case
@@ -21,3 +21,15 @@ def retrieve_posts(request):
     # is equal to: posts = Post.objects.exclude(filter_exp)
     message = f'post count: {posts.count()}'
     return HttpResponse()
+
+def retrieve_posts_exclude_sample(request):
+    posts = Post.objects.all()
+
+    if 'title' in request.GET.keys():
+        posts = posts.exclude(title=request.GET.get('title'))
+
+    posts = posts.order_by('-title', 'content')
+    posts = posts.filter(created_date__range=(datetime.now() - timedelta(hours=1), datetime.now()))
+
+    # message = f'post count: {posts.count()}'
+    return HttpResponse(posts.only('title').values_list('title', flat=True))
