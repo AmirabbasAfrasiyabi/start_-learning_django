@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 
-# from django.db.models import CharField
-from django.db.models import Q ,F
+from django.db.models import CharField
+from django.db.models import Q, F, When, Case
 from django.http import HttpResponse
 # Create your views here.
+from django.shortcuts import render
 
 # from posts.forms import post_formset, book_formset
-from posts.models import Post
+from posts.models import Post, Comment, PostTemplate, Book
+
 
 def retrieve_posts(request):
     filter_exp = Q()
@@ -45,3 +47,16 @@ def retrieve_posts_with_equal_content_title(request):
     posts = Post.objects.filter(title=F('content')).annotate(view_like_avg=F('like_count') + F('view_count'))
 
     return HttpResponse(posts.values_list('title', 'content', 'view_like_avg'))
+
+def get_comments(request):
+    now = datetime.now()
+    comments = Comment.objects.filter(post__title__contains='post', created_date__range=(now - timedelta(hours=1), now))
+
+    # first way to get posts which have a comment with text='something'
+    Post.objects.filter(my_comments__text__contains='something')
+
+    # second way to get posts which have a comment with text='something'
+    comments = Comment.objects.filter(text__contains='something')
+    Post.objects.filter(my_comments__in=comments)
+    return HttpResponse(comments.values_list('text', flat=True))
+
