@@ -7,3 +7,5 @@ class Post(models.Model):
     content = models.TextField()
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
+    view_count = models.PositiveIntegerField(default=0)
+    like_count = models.PositiveIntegerField(default=0)
