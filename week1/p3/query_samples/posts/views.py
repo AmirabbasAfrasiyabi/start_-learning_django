@@ -1,7 +1,7 @@
 # from datetime import datetime, timedelta
 
 # from django.db.models import CharField
-# from django.db.models import Q, F, When, Case
+from django.db.models import Q, F, When, Case
 from django.http import HttpResponse
 # Create your views here.
 
