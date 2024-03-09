@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
 
 from django.db.models import CharField
-from django.db.models import Q, F
+from django.db.models import Q, F, When, Case
 from django.http import HttpResponse
 # Create your views here.
 from django.shortcuts import render
-from posts.models import Post, Comment, PostTemplate
 
-# from posts.forms import post_formset, book_formset
-from posts.models import Post, Comment
+from posts.forms import post_formset, book_formset
+from posts.models import Post, Comment, PostTemplate, Book
 
 
+# Max 3 queries to db, Min 1 query to db
 def retrieve_posts(request):
     filter_exp = Q()
 
@@ -25,6 +25,7 @@ def retrieve_posts(request):
     message = f'post count: {posts.count()}'
     return HttpResponse()
 
+
 def retrieve_posts_exclude_sample(request):
     posts = Post.objects.all()
 
@@ -36,6 +37,7 @@ def retrieve_posts_exclude_sample(request):
 
     # message = f'post count: {posts.count()}'
     return HttpResponse(posts.only('title').values_list('title', flat=True))
+
 
 def retrieve_posts_with_equal_content_title(request):
     # python way to find posts with equal content & title
@@ -49,6 +51,7 @@ def retrieve_posts_with_equal_content_title(request):
 
     return HttpResponse(posts.values_list('title', 'content', 'view_like_avg'))
 
+
 def get_comments(request):
     now = datetime.now()
     comments = Comment.objects.filter(post__title__contains='post', created_date__range=(now - timedelta(hours=1), now))
@@ -61,6 +64,7 @@ def get_comments(request):
     Post.objects.filter(my_comments__in=comments)
     return HttpResponse(comments.values_list('text', flat=True))
 
+
 def add_templates(request):
     now = datetime.now()
     PostTemplate.objects.create(title_template='some other template', content_template='')
@@ -68,3 +72,44 @@ def add_templates(request):
     post = Post.not_archived.first()
     post.templates.set(new_template)
     return HttpResponse('done')
+
+
+def view_template(request):
+    if 'post_id' in request.GET.keys():
+        post = Post.objects.get(pk=request.GET.get('post_id'))
+    else:
+        posts = Post.objects.exclude(title=F('content'))
+        return render(request, 'posts.html',
+                      context={'title': 'My post list', 'posts': posts})
+
+    if request.method == 'POST':
+        form = post_formset(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return render(request, 'post_detail.html', context={'form': form, 'post': post})
+        print('not valid', form.error_messages)
+        return render(request, 'post_detail.html', context={'form': form, 'post': post})
+
+    form = post_formset(queryset=Post.objects.filter(title__contains='some'))
+    return render(request, 'post_detail.html', context={
+        'post': post,
+        'form': form,
+    })
+
+
+# def library_view(request):
+#     library = request.GET.get('library', 1)
+#     if request.method == 'GET':
+#         formset = book_formset(queryset=Book.objects.filter(library_id=library))
+#         return render(request, 'book.html', context={
+#             'formset': book_formset
+#         })
+#     elif request.method == 'POST':
+#         formset = book_formset(request.POST, queryset=Book.objects.filter(library_id=library))
+#         if formset.is_valid():
+#             formset.save(commit=True)
+#         return render(request, 'book.html', context={
+#             'formset': book_formset
+#         })
+
+#     return HttpResponse('method not allowed', status=405)
